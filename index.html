@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+        <script type="text/JavaScript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.11/jquery.csv.min.js"></script>
+        <title>BORN IN DECEMBER</title>
+    </head>
+    <body>
+        <input type="file" id="file-input" />
+        <h3>People born in december:</h3>
+        <pre id="content-file"></pre>
+
+        <script>
+            /*
+            <///////COPY AND PASTE IN A NOTEPAD FILE AND SAVE AS .csv file\\\\\>
+            name,departament,month_birth
+            Juan,Accounting,November
+            Martin,IT,March
+            Teresa,RRHH,August
+            Exequiel,IT,November
+            Andrea,Health,September
+            Beatriz,Health,December
+            Carlos,Transport,December
+             */
+            const readFile = (e) => {
+                //UPLOAD DATA
+                const file = e.target.files[0];
+                if (!file) {
+                    return;
+                }
+
+                const reader = new FileReader();
+                //READ DATA
+                reader.onload = (e) => {
+                    const content = e.target.result;
+                    const fileToObject = $.csv.toObjects(content);
+                    const born_in_december = fileToObject.filter((data) => data.month_birth === 'December');
+
+                    if (born_in_december.length >= 1) {
+                        const print = born_in_december.map((data) => `<li>${data.name} is born in ${data.month_birth}</li>`);
+                        showContent(print.join(''));
+                    } else {
+                        alert('There are no people born in December');
+                    }
+                };
+                reader.readAsText(file);
+            };
+
+            //PRINT DATA
+            const showContent = (content) => {
+                const element = document.getElementById('content-file');
+                element.innerHTML = content;
+            };
+
+            document.getElementById('file-input').addEventListener('change', readFile, false);
+        </script>
+    </body>
+</html>
